@@ -1,8 +1,11 @@
 import React from 'react';
 
-export function Categories() {
+type CategoriesPropsType = {
+  value: number;
+  onChahgeCategories: (id: number) => void;
+};
+export function Categories(props: CategoriesPropsType) {
   const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
-  const [activeIndex, setActiveIndex] = React.useState(0);
 
   return (
     <div className="categories">
@@ -11,9 +14,9 @@ export function Categories() {
           <li
             key={index}
             onClick={() => {
-              setActiveIndex(index);
+              props.onChahgeCategories(index);
             }}
-            className={activeIndex === index ? 'active' : ''}>
+            className={props.value === index ? 'active' : ''}>
             {title}
           </li>
         ))}

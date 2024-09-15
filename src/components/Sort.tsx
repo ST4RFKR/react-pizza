@@ -1,13 +1,30 @@
 import React from 'react';
 
-export function Sort() {
+type valueType = {
+  name: string;
+  sortProp: string;
+};
+type SortPropsType = {
+  value: valueType;
+  onChahgeSort: (obj: valueType) => void;
+};
+export function Sort(props: SortPropsType) {
+  const { value, onChahgeSort } = props;
+
   const [visible, setVisible] = React.useState(false);
-  const [activeIndex, setActiveIndex] = React.useState(0);
+  // const [activeIndex, setActiveIndex] = React.useState(0);
 
-  const selectItem = ['популярности', 'цене', 'алфавиту'];
+  const selectItem = [
+    { name: 'популярности', sortProp: 'rating' },
+    { name: 'популярности(ASC)', sortProp: '-rating' },
+    { name: 'цене', sortProp: 'price' },
+    { name: 'цене(ASC)', sortProp: '-price' },
+    { name: 'алфавиту', sortProp: 'title' },
+    { name: 'алфавиту(ASC)', sortProp: '-title' },
+  ];
 
-  function updatePopupAndActiveClass(idx: number) {
-    setActiveIndex(idx);
+  function updatePopupAndActiveClass(obj: any) {
+    onChahgeSort(obj);
     setVisible(false);
   }
 
@@ -30,18 +47,18 @@ export function Sort() {
           onClick={() => {
             setVisible(!visible);
           }}>
-          {selectItem[activeIndex]}
+          {value.name}
         </span>
       </div>
       {visible && (
         <div className="sort__popup">
           <ul>
-            {selectItem.map((item, idx) => (
+            {selectItem.map((obj, idx) => (
               <li
-                onClick={() => updatePopupAndActiveClass(idx)}
-                className={activeIndex === idx ? 'active' : ''}
+                onClick={() => updatePopupAndActiveClass(obj)}
+                className={obj.sortProp === value.sortProp ? 'active' : ''}
                 key={idx}>
-                {item}
+                {obj.name}
               </li>
             ))}
           </ul>
