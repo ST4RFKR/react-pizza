@@ -26,7 +26,7 @@ const Home = ({ searchValue }: any) => {
       .then((res) => res.json())
       .then((item) => {
         console.log(item);
-        setItems(Array.isArray(item) ? item : []);
+        setItems(item);
         setIsLoading(false);
       });
     window.scrollTo(0, 0);
