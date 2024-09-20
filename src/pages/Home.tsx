@@ -5,21 +5,26 @@ import { Sort } from '../components/Sort';
 import { PizzaBlock, PizzaBlockPropsType } from '../components/PizzaBlock';
 import { Skeleton } from '../components/PizzaBlock/Skeleton';
 import { Pagination } from '../components/Pagination';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { setCategoryId } from '../redux/slice/filterSlice';
 const Home = ({ searchValue }: any) => {
+  const categoryId = useSelector((state: any) => state.filter.categoryId);
+  const sortType = useSelector((state: any) => state.filter.sort.sortProp);
+  const dispatch = useDispatch();
+
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [categoryId, setCategoryId] = React.useState(0);
   const [currentPage, setCurrentPage] = React.useState(1);
 
-  const [sortType, setSortType] = React.useState({
-    name: 'популярности',
-    sortProp: 'rating',
-  });
-  const sortBy = sortType.sortProp.replace('-', '');
-  const orderBy = sortType.sortProp.includes('-') ? 'asc' : 'desc';
+  const sortBy = sortType.replace('-', '');
+  const orderBy = sortType.includes('-') ? 'asc' : 'desc';
   const category = categoryId > 0 ? `category=${categoryId}` : '';
   const search = searchValue ? `&search=${searchValue}` : '';
+
+  const onChahgeCategories = (id: number) => {
+    dispatch(setCategoryId(id));
+  };
+
   React.useEffect(() => {
     setIsLoading(true);
     fetch(
@@ -47,14 +52,9 @@ const Home = ({ searchValue }: any) => {
   return (
     <>
       <div className="content__top">
-        <Categories value={categoryId} onChahgeCategories={(id) => setCategoryId(id)} />
+        <Categories value={categoryId} onChahgeCategories={onChahgeCategories} />
 
-        <Sort
-          value={sortType}
-          onChahgeSort={(obj) => {
-            setSortType(obj);
-          }}
-        />
+        <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">

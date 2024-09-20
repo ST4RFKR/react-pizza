@@ -1,16 +1,9 @@
 import React from 'react';
-
-type valueType = {
-  name: string;
-  sortProp: string;
-};
-type SortPropsType = {
-  value: valueType;
-  onChahgeSort: (obj: valueType) => void;
-};
-export function Sort(props: SortPropsType) {
-  const { value, onChahgeSort } = props;
-
+import { useSelector, useDispatch } from 'react-redux';
+import { setSort } from '../redux/slice/filterSlice';
+export function Sort() {
+  const dispatch = useDispatch();
+  const sort = useSelector((state: any) => state.filter.sort);
   const [visible, setVisible] = React.useState(false);
   // const [activeIndex, setActiveIndex] = React.useState(0);
 
@@ -24,7 +17,7 @@ export function Sort(props: SortPropsType) {
   ];
 
   function updatePopupAndActiveClass(obj: any) {
-    onChahgeSort(obj);
+    dispatch(setSort(obj));
     setVisible(false);
   }
 
@@ -47,7 +40,7 @@ export function Sort(props: SortPropsType) {
           onClick={() => {
             setVisible(!visible);
           }}>
-          {value.name}
+          {sort.name}
         </span>
       </div>
       {visible && (
@@ -56,7 +49,7 @@ export function Sort(props: SortPropsType) {
             {selectItem.map((obj, idx) => (
               <li
                 onClick={() => updatePopupAndActiveClass(obj)}
-                className={obj.sortProp === value.sortProp ? 'active' : ''}
+                className={obj.sortProp === sort.sortProp ? 'active' : ''}
                 key={idx}>
                 {obj.name}
               </li>
