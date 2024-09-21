@@ -1,20 +1,20 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSort } from '../redux/slice/filterSlice';
+
+export const selectItem = [
+  { name: 'популярности', sortProp: 'rating' },
+  { name: 'популярности(ASC)', sortProp: '-rating' },
+  { name: 'цене', sortProp: 'price' },
+  { name: 'цене(ASC)', sortProp: '-price' },
+  { name: 'алфавиту', sortProp: 'title' },
+  { name: 'алфавиту(ASC)', sortProp: '-title' },
+];
+
 export function Sort() {
   const dispatch = useDispatch();
   const sort = useSelector((state: any) => state.filter.sort);
   const [visible, setVisible] = React.useState(false);
-  // const [activeIndex, setActiveIndex] = React.useState(0);
-
-  const selectItem = [
-    { name: 'популярности', sortProp: 'rating' },
-    { name: 'популярности(ASC)', sortProp: '-rating' },
-    { name: 'цене', sortProp: 'price' },
-    { name: 'цене(ASC)', sortProp: '-price' },
-    { name: 'алфавиту', sortProp: 'title' },
-    { name: 'алфавиту(ASC)', sortProp: '-title' },
-  ];
 
   function updatePopupAndActiveClass(obj: any) {
     dispatch(setSort(obj));

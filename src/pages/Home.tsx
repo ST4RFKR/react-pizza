@@ -1,20 +1,26 @@
 import React from 'react';
 
 import { Categories } from '../components/Categories';
-import { Sort } from '../components/Sort';
+import { selectItem, Sort } from '../components/Sort';
 import { PizzaBlock, PizzaBlockPropsType } from '../components/PizzaBlock';
 import { Skeleton } from '../components/PizzaBlock/Skeleton';
 import { Pagination } from '../components/Pagination';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCategoryId } from '../redux/slice/filterSlice';
+import { setCategoryId, setCurrentPage, setFilter } from '../redux/slice/filterSlice';
+import axios from 'axios';
+import qs from 'qs';
+import { useNavigate } from 'react-router-dom';
+
 const Home = ({ searchValue }: any) => {
+  const navigate = useNavigate();
   const categoryId = useSelector((state: any) => state.filter.categoryId);
   const sortType = useSelector((state: any) => state.filter.sort.sortProp);
+  const currentPage = useSelector((state: any) => state.filter.currentPage);
   const dispatch = useDispatch();
 
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [currentPage, setCurrentPage] = React.useState(1);
+  // const [currentPage, setCurrentPage] = React.useState(1);
 
   const sortBy = sortType.replace('-', '');
   const orderBy = sortType.includes('-') ? 'asc' : 'desc';
@@ -24,20 +30,51 @@ const Home = ({ searchValue }: any) => {
   const onChahgeCategories = (id: number) => {
     dispatch(setCategoryId(id));
   };
+  const onChahgePage = (num: number) => {
+    dispatch(setCurrentPage(num));
+  };
+  React.useEffect(() => {
+    if (window.location.search) {
+      const params = qs.parse(window.location.search.substring(1));
+      const sort = selectItem.find((obj: any) => obj.sortProp === params.sortType);
+      dispatch(
+        setFilter({
+          ...params,
+          sort,
+        }),
+      );
+    }
+  }, []);
 
   React.useEffect(() => {
     setIsLoading(true);
-    fetch(
-      `https://66e3eaebd2405277ed125032.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}${search}&order=${orderBy}`,
-    )
-      .then((res) => res.json())
-      .then((item) => {
-        setItems(item);
+    // fetch(
+    //   `https://66e3eaebd2405277ed125032.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}${search}&order=${orderBy}`,
+    // )
+    //   .then((res) => res.json())
+    //   .then((item) => {
+    //     setItems(item);
+    //     setIsLoading(false);
+    //   });
+    axios
+      .get(
+        `https://66e3eaebd2405277ed125032.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}${search}&order=${orderBy}`,
+      )
+      .then((res) => {
+        setItems(res.data);
         setIsLoading(false);
       });
     window.scrollTo(0, 0);
   }, [categoryId, sortType, searchValue, currentPage]);
-
+  React.useEffect(() => {
+    const queryString = qs.stringify({
+      sortType,
+      categoryId,
+      currentPage,
+    });
+    navigate(`?${queryString}`);
+    console.log(queryString);
+  }, [categoryId, sortType, searchValue, currentPage]);
   const skeleton = [...new Array(6)].map((_, idx) => <Skeleton key={idx} />);
   const pizzas = items.map((obj: PizzaBlockPropsType) => (
     <PizzaBlock
@@ -69,10 +106,7 @@ const Home = ({ searchValue }: any) => {
               />
             ))} */}
         {isLoading ? skeleton : pizzas}
-        <Pagination
-          currentPage={currentPage}
-          onChangePage={(number: any) => setCurrentPage(number)}
-        />
+        <Pagination currentPage={currentPage} onChangePage={onChahgePage} />
       </div>
     </>
   );
