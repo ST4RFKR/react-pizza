@@ -21,11 +21,8 @@ const Home = ({ searchValue }: any) => {
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
   // const [currentPage, setCurrentPage] = React.useState(1);
-
-  const sortBy = sortType.replace('-', '');
-  const orderBy = sortType.includes('-') ? 'asc' : 'desc';
-  const category = categoryId > 0 ? `category=${categoryId}` : '';
-  const search = searchValue ? `&search=${searchValue}` : '';
+  const isSearch = React.useRef(false);
+  const isMounted = React.useRef(false);
 
   const onChahgeCategories = (id: number) => {
     dispatch(setCategoryId(id));
@@ -33,20 +30,13 @@ const Home = ({ searchValue }: any) => {
   const onChahgePage = (num: number) => {
     dispatch(setCurrentPage(num));
   };
-  React.useEffect(() => {
-    if (window.location.search) {
-      const params = qs.parse(window.location.search.substring(1));
-      const sort = selectItem.find((obj: any) => obj.sortProp === params.sortType);
-      dispatch(
-        setFilter({
-          ...params,
-          sort,
-        }),
-      );
-    }
-  }, []);
 
-  React.useEffect(() => {
+  const fetchPizzas = () => {
+    const sortBy = sortType.replace('-', '');
+    const orderBy = sortType.includes('-') ? 'asc' : 'desc';
+    const category = categoryId > 0 ? `category=${categoryId}` : '';
+    const search = searchValue ? `&search=${searchValue}` : '';
+
     setIsLoading(true);
     // fetch(
     //   `https://66e3eaebd2405277ed125032.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}${search}&order=${orderBy}`,
@@ -64,16 +54,39 @@ const Home = ({ searchValue }: any) => {
         setItems(res.data);
         setIsLoading(false);
       });
+  };
+  React.useEffect(() => {
+    if (window.location.search) {
+      const params = qs.parse(window.location.search.substring(1));
+
+      const sort = selectItem.find((obj: any) => obj.sortProp === params.sortType);
+      dispatch(
+        setFilter({
+          ...params,
+          sort,
+        }),
+      );
+      isSearch.current = true;
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (!isSearch.current) {
+      fetchPizzas();
+    }
+    isSearch.current = false;
     window.scrollTo(0, 0);
   }, [categoryId, sortType, searchValue, currentPage]);
   React.useEffect(() => {
-    const queryString = qs.stringify({
-      sortType,
-      categoryId,
-      currentPage,
-    });
-    navigate(`?${queryString}`);
-    console.log(queryString);
+    if (isMounted.current) {
+      const queryString = qs.stringify({
+        sortType,
+        categoryId,
+        currentPage,
+      });
+      navigate(`?${queryString}`);
+    }
+    isMounted.current = true;
   }, [categoryId, sortType, searchValue, currentPage]);
   const skeleton = [...new Array(6)].map((_, idx) => <Skeleton key={idx} />);
   const pizzas = items.map((obj: PizzaBlockPropsType) => (
