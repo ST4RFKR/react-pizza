@@ -7,7 +7,6 @@ import { Skeleton } from '../components/PizzaBlock/Skeleton';
 import { Pagination } from '../components/Pagination';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCategoryId, setCurrentPage, setFilter } from '../redux/slice/filterSlice';
-import axios from 'axios';
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
 import { fetchPizzas } from '../redux/slice/pizzaSlice';
@@ -26,12 +25,11 @@ const Home = ({ searchValue }: any) => {
   const sortType = useSelector((state: any) => state.filter.sort.sortProp);
   const currentPage = useSelector((state: any) => state.filter.currentPage);
   const { items, status } = useSelector((state: any) => state.pizza);
-  console.log(items);
 
   const dispatch = useDispatch();
 
   // const [items, setItems] = React.useState([]);
-  const [isLoading, setIsLoading] = React.useState(true);
+  // const [isLoading, setIsLoading] = React.useState(true);
   // const [currentPage, setCurrentPage] = React.useState(1);
   const isSearch = React.useRef(false);
   const isMounted = React.useRef(false);

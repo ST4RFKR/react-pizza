@@ -11,13 +11,10 @@ type FetchPizzasParams = {
 export const fetchPizzas = createAsyncThunk(
   'pizza/fetchPizzas',
   async (params: FetchPizzasParams) => {
-    console.log(params);
-
     const { sortBy, orderBy, category, search, currentPage } = params;
     const { data } = await axios.get(
       `https://66e3eaebd2405277ed125032.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}${search}&order=${orderBy}`,
     );
-    console.log(data);
 
     return data;
   },
