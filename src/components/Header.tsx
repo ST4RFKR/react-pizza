@@ -15,7 +15,7 @@ export function Header({ setSearchValue }: any) {
           <img width="38" src={logoSvg} alt="Pizza logo" />
           <div>
             <h1>React Pizza</h1>
-            <p>самая вкусная пицца во вселенной</p>
+            <p>самая вкусная пицца во вселенной!</p>
           </div>
         </Link>
         <Search searchValue={searchValue} setSearchValue={setSearchValue} />
