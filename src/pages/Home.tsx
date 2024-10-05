@@ -8,7 +8,7 @@ import { Pagination } from '../components/Pagination';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCategoryId, setCurrentPage, setFilter } from '../redux/slice/filterSlice';
 import qs from 'qs';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { fetchPizzas } from '../redux/slice/pizzaSlice';
 
 type FetchPizzasParams = {
@@ -104,15 +104,17 @@ const Home = ({ searchValue }: any) => {
   }, [categoryId, sortType, searchValue, currentPage]);
   const skeleton = [...new Array(6)].map((_, idx) => <Skeleton key={idx} />);
   const pizzas = items.map((obj: PizzaBlockPropsType) => (
-    <PizzaBlock
-      key={obj.id}
-      id={obj.id}
-      title={obj.title}
-      price={obj.price}
-      imageUrl={obj.imageUrl}
-      sizes={obj.sizes}
-      types={obj.types}
-    />
+    <Link key={obj.id} to={`/pizza/${obj.id}`}>
+      {' '}
+      <PizzaBlock
+        id={obj.id}
+        title={obj.title}
+        price={obj.price}
+        imageUrl={obj.imageUrl}
+        sizes={obj.sizes}
+        types={obj.types}
+      />
+    </Link>
   ));
   return (
     <>
