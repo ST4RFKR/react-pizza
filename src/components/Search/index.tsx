@@ -8,9 +8,9 @@ const Search = ({ searchValue, setSearchValue }: any) => {
   const dispacth = useDispatch();
 
   function onClickClear() {
-    dispacth(setSearchValue(''));
-    setSearchValue('');
-    inputRef.current.focus();
+    setValue('');
+    // dispacth(setSearchValue(''));
+    // inputRef.current.focus();
   }
 
   const updateSearchValue = React.useCallback(

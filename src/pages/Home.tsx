@@ -104,17 +104,17 @@ const Home = ({ searchValue }: any) => {
   }, [categoryId, sortType, searchValue, currentPage]);
   const skeleton = [...new Array(6)].map((_, idx) => <Skeleton key={idx} />);
   const pizzas = items.map((obj: PizzaBlockPropsType) => (
-    <Link key={obj.id} to={`/pizza/${obj.id}`}>
-      {' '}
-      <PizzaBlock
-        id={obj.id}
-        title={obj.title}
-        price={obj.price}
-        imageUrl={obj.imageUrl}
-        sizes={obj.sizes}
-        types={obj.types}
-      />
-    </Link>
+    // <Link key={obj.id} to={`/pizza/${obj.id}`}>
+
+    <PizzaBlock
+      id={obj.id}
+      title={obj.title}
+      price={obj.price}
+      imageUrl={obj.imageUrl}
+      sizes={obj.sizes}
+      types={obj.types}
+    />
+    // </Link>
   ));
   return (
     <>
